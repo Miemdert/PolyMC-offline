@@ -1,7 +1,7 @@
 { stdenv
 , lib
 , symlinkJoin
-, addOpenGLRunpath
+, addDriverRunpath
 , polymc-unwrapped
 , wrapQtAppsHook
 , jdk8
@@ -13,6 +13,7 @@
 , libpulseaudio
 , qtbase
 , libGL
+, vulkan-loader
 , glfw
 , openal
 , udev
@@ -64,6 +65,7 @@ symlinkJoin {
         stdenv.cc.cc.lib
         udev # OSHI
         wayland
+        vulkan-loader # VulkanMod's lwjgl
       ]
       ++ lib.optional gamemodeSupport gamemode.lib
       ++ additionalLibs;
@@ -76,7 +78,7 @@ symlinkJoin {
     in
     [
       "--prefix POLYMC_JAVA_PATHS : ${lib.makeSearchPath "bin/java" jdks}"
-      "--set LD_LIBRARY_PATH ${addOpenGLRunpath.driverLink}/lib:${lib.makeLibraryPath runtimeLibs}"
+      "--set LD_LIBRARY_PATH ${addDriverRunpath.driverLink}/lib:${lib.makeLibraryPath runtimeLibs}"
       "--prefix PATH : ${lib.makeBinPath runtimeBins}"
     ];
 
